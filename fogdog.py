@@ -72,6 +72,7 @@ def check_fog(zip_code, api_key):
 	res = requests.get(get_str.format(zip_code, api_key))
 	if res.ok:
 		data = res.json()
+		logger.debug(data)
 	else:
 		logger.error(res.text)
 		return False
