@@ -113,7 +113,7 @@ def main():
 		message = message[:-1]
 	else:
 		if check_send_no():
-			message = 'Sorry dog. No fog.'
+			message = NOPE_MSG
 		else:
 			message = None
 
