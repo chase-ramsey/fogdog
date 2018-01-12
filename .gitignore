@@ -1,0 +1,4 @@
+venv
+.bashenv
+*.log
+numbers.txt
