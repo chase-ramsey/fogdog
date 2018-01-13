@@ -1,3 +1,4 @@
+import boto3
 import json
 import requests
 
@@ -18,9 +19,14 @@ class Fogdog:
 		self.debug = debug
 
 	def _load_zips(self):
-		# TODO: Load file from S3
-		with open('zips.json', 'r') as f:
-			return json.load(f)
+		s3_cli = boto3.client('s3')
+		try:
+			res = s3_cli.get_object(Bucket='foggydoggy', Key='zips.json')
+			return json.loads(res['Body'].read().decode('utf8'))
+		except Exception as ex:
+			self.logger.error(ex)
+			return None
+
 
 	def check_send_no(self):
 		"""
@@ -65,6 +71,10 @@ class Fogdog:
 
 	def fetch(self):
 		self.logger.info('Checking for fog...')
+		if not self.zips:
+			self.logger.error('There was an error retrieving zip codes.')
+			return
+
 		fog_spots = set()
 		for zip_code, spot in self.zips.items():
 			if self.check_fog(zip_code):

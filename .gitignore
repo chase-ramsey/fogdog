@@ -2,4 +2,3 @@ venv
 .bashenv
 *.zip
 *.pyc
-zips.json
