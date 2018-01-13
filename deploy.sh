@@ -13,7 +13,7 @@ if [[ $venv -ne 0 ]]; then
   source venv/bin/activate
 fi
 
-PKGS=$PROJECT_DIR/venv/lib/python3.5/site-packages
+PKGS=$VIRTUAL_ENV/lib/python3.5/site-packages
 echo "Zipping project dependencies at $PKGS..."
 cd $PKGS && zip -r9 -q $PROJECT_DIR/deploy.zip *
 
