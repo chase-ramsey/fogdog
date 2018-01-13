@@ -46,7 +46,7 @@ class Fogdog:
 
 		found_fog = list()
 		for condition in data['weather']:
-			found_fog.append('snow' in condition['main'].lower())
+			found_fog.append('fog' in condition['main'].lower())
 			found_fog.append('fog' in condition['description'].lower())
 			found_fog.append('741' == str(condition['id']))
 
@@ -83,5 +83,5 @@ class Fogdog:
 
 		if not self.debug:
 			self.dispatch(message)
-			
+
 		self.logger.info(message)
