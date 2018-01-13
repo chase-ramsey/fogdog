@@ -2,7 +2,7 @@ import boto3
 import json
 import requests
 
-from app.config import Config
+from config import Config, create_logger
 from datetime import datetime
 from pytz import timezone
 from twilio.rest import Client
@@ -95,3 +95,9 @@ class Fogdog:
 			self.dispatch(message)
 
 		self.logger.info(message)
+
+
+if __name__ == '__main__':
+	logger = create_logger()
+	dog = Fogdog(logger, debug=True)
+	dog.fetch()
