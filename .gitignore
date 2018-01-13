@@ -1,5 +1,5 @@
 venv
 .bashenv
-*.log*
-numbers.txt
+*.zip
+*.pyc
 zips.json
