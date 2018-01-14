@@ -19,7 +19,8 @@ class Fogdog:
 		self.phone = Config.PHONE
 		self.weather_api = Config.WEATHER_API
 		self.weather_key = Config.WEATHER_KEY
-		self.zips = self._load_zips()
+		self.zips = self._load_file_s3('zips.json')
+		self.phone_list = self._load_file_s3('numbers.json')
 		self.logger = logger
 
 		# Debug attrs
@@ -28,10 +29,10 @@ class Fogdog:
 		self.send_msg = send_msg
 		self.debug_phone = Config.DEBUG_PHONE
 
-	def _load_zips(self):
+	def _load_file_s3(self, key_name):
 		s3_cli = boto3.client('s3')
 		try:
-			res = s3_cli.get_object(Bucket='foggydoggy', Key='zips.json')
+			res = s3_cli.get_object(Bucket='foggydoggy', Key=key_name)
 			return json.loads(res['Body'].read().decode('utf8'))
 		except Exception as ex:
 			self.logger.error(ex)
@@ -59,6 +60,7 @@ class Fogdog:
 		res = requests.get(self.weather_api.format(zip_code, self.weather_key))
 		if res.ok:
 			data = res.json()
+			return data
 		else:
 			raise Exception(res.text)
 
@@ -83,11 +85,11 @@ class Fogdog:
 			return
 
 		if self.debug:
-			phones = [self.debug_phone]
+			numbers = [self.debug_phone]
 		else:
-			phones = [phone.num for phone in self.client.outgoing_caller_ids.list()]
+			numbers = self.phone_list['numbers']
 
-		for num in phones:
+		for num in numbers:
 			self.client.messages.create(
 				num,
 				from_=self.phone,
@@ -126,11 +128,12 @@ if __name__ == '__main__':
 		with open(debug_file, 'r') as f:
 			data = json.load(f)['debug']
 
+		debug_data = data['data']
 		send_msg = bool(data['dispatch'])
 		logger.info('Running in debug: {}'.format(debug_file))
 	else:
-		data = None
+		debug_data = None
 		send_msg = False
 
-	dog = Fogdog(logger, debug=True, debug_data=data['data'], send_msg=send_msg)
+	dog = Fogdog(logger, debug=True, debug_data=debug_data, send_msg=send_msg)
 	dog.fetch()
