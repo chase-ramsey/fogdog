@@ -10,17 +10,26 @@ from pytz import timezone
 from twilio.rest import Client
 
 
+YEAH_MSG = 'Yeah dog. Found fog:'
 NOPE_MSG = 'Sorry dog. No fog.'
 
 
 class Fogdog:
 	def __init__(self, logger, debug=False, debug_data=None, send_msg=True):
+		# Twilio config
 		self.client = Client(Config.TWILIO_SID, Config.TWILIO_KEY)
 		self.phone = Config.PHONE
-		self.weather_api = Config.WEATHER_API
+
+		# Weather API config
+		self.default_city = Config.DEFAULT_CITY
+		self.weather_zip = Config.WEATHER_ZIP
+		self.weather_city = Config.WEATHER_CITY
 		self.weather_key = Config.WEATHER_KEY
+
+		# S3 data
 		self.zips = self._load_file_s3('zips.json')
 		self.phone_list = self._load_file_s3('numbers.json')
+
 		self.logger = logger
 
 		# Debug attrs
@@ -57,7 +66,7 @@ class Fogdog:
 		if self.debug_data:
 			return self.debug_data
 
-		res = requests.get(self.weather_api.format(zip_code, self.weather_key))
+		res = requests.get(self.weather_zip.format(zip_code, self.weather_key))
 		if res.ok:
 			data = res.json()
 			return data
@@ -82,7 +91,7 @@ class Fogdog:
 		return any(found_fog)
 
 	def dispatch(self, message):
-		if message == NOPE_MSG and not self.check_send_no():
+		if NOPE_MSG in message and not self.check_send_no():
 			return
 
 		if self.debug:
@@ -109,12 +118,21 @@ class Fogdog:
 				fog_spots.add(spot)
 
 		if len(fog_spots) > 0:
-			message = 'Yeah dog. Found fog:'
+			message = YEAH_MSG
 			for spot in fog_spots:
 				message += ' {},'.format(spot)
 			message = message[:-1]
 		else:
 			message = NOPE_MSG
+			res = requests.get(self.weather_city.format(self.default_city, self.weather_key))
+			if res.ok:
+				weather_data = res.json()['weather']
+				condition = [data['description'] for data in weather_data]
+				message = message \
+					+ ' Current condition in {}: '.format(self.default_city) \
+					+ ', '.join(condition)[:-1]
+			else:
+				self.logger.error(res.text)
 
 		if self.send_msg:
 			self.dispatch(message)

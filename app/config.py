@@ -7,21 +7,24 @@ class Config(object):
 	TWILIO_SID = os.environ.get('TWILIO_SID')
 	TWILIO_KEY = os.environ.get('TWILIO_TOKEN')
 	PHONE = os.environ.get('TWILIO_PHONE')
-
-	WEATHER_API = os.environ.get('WEATHER_API')
-	WEATHER_KEY = os.environ.get('WEATHER_TOKEN')
-
 	DEBUG_PHONE = os.environ.get('DEBUG_PHONE')
+
+	DEFAULT_CITY = os.environ.get('DEFAULT_CITY')
+	WEATHER_ZIP = os.environ.get('WEATHER_ZIP')
+	WEATHER_CITY = os.environ.get('WEATHER_CITY')
+	WEATHER_KEY = os.environ.get('WEATHER_TOKEN')
 
 	@classmethod
 	def check_env(cls):
 		config_vars = (
-			cls.TWILIO_SID, 
-			cls.TWILIO_KEY, 
-			cls.PHONE, 
-			cls.WEATHER_API, 
-			cls.WEATHER_KEY,
-			cls.DEBUG_PHONE
+			cls.TWILIO_SID,
+			cls.TWILIO_KEY,
+			cls.PHONE,
+			cls.DEBUG_PHONE,
+			cls.DEFAULT_CITY,
+			cls.WEATHER_ZIP,
+			cls.WEATHER_CITY,
+			cls.WEATHER_KEY
 		)
 
 		if not all(config_vars):
