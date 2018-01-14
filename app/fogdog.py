@@ -62,7 +62,8 @@ class Fogdog:
 			data = res.json()
 			return data
 		else:
-			raise Exception(res.text)
+			self.logger.error(res.text)
+			return None
 
 	def check_fog(self, zip_code):
 		"""
