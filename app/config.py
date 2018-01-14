@@ -11,6 +11,8 @@ class Config(object):
 	WEATHER_API = os.environ.get('WEATHER_API')
 	WEATHER_KEY = os.environ.get('WEATHER_TOKEN')
 
+	DEBUG_PHONE = os.environ.get('DEBUG_PHONE')
+
 	@classmethod
 	def check_env(cls):
 		config_vars = (
@@ -18,7 +20,8 @@ class Config(object):
 			cls.TWILIO_KEY, 
 			cls.PHONE, 
 			cls.WEATHER_API, 
-			cls.WEATHER_KEY
+			cls.WEATHER_KEY,
+			cls.DEBUG_PHONE
 		)
 
 		if not all(config_vars):

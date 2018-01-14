@@ -1,0 +1,14 @@
+{
+	"debug": {
+		"dispatch": 0,
+		"data": {
+			"weather": [
+				{
+					"main": "mist",
+					"description": "It is foggy",
+					"id": "001"
+				}
+			]
+		}
+	}
+}
