@@ -54,12 +54,11 @@ class Fogdog:
 		"""
 		if self.debug_data and 'time' in self.debug_data.keys():
 			_date = parse(self.debug_data['time'])
-			print(_date)
 		else:
 			tz = timezone('US/Central')
 			_date = datetime.now(tz=tz)
 
-		if _date.strftime('%H') == '10' and int(_date.strftime('%M')) > 15:
+		if _date.strftime('%H') == '10':
 			return True
 
 	def get_fog_data(self, zip_code):
