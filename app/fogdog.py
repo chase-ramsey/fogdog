@@ -50,7 +50,7 @@ class Fogdog:
 			tz = timezone('US/Central')
 			_date = datetime.now(tz=tz)
 
-		if _date.strftime('%H') == '10':
+		if _date.strftime('%H') == '10' and int(_date.strftime('%M')) > 15:
 			return True
 
 	def get_fog_data(self, zip_code):
