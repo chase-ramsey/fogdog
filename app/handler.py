@@ -8,6 +8,7 @@ def go_get_em_fogdog(event, context):
 	logger = create_logger()
 
 	if 'debug' in event.keys():
+		logger.info('Running in debug')
 		dog = Fogdog(
 			logger,
 			debug=True,

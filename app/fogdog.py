@@ -59,7 +59,6 @@ class Fogdog:
 		res = requests.get(self.weather_api.format(zip_code, self.weather_key))
 		if res.ok:
 			data = res.json()
-			self.logger.debug(data['weather'])
 		else:
 			raise Exception(res.text)
 
