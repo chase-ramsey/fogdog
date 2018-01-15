@@ -21,7 +21,8 @@ class Fogdog:
 		self.phone = Config.PHONE
 
 		# Weather API config
-		self.default_city = Config.DEFAULT_CITY
+		self.default_city_id = Config.DEFAULT_CITY_ID
+		self.default_city_name = Config.DEFAULT_CITY_NAME
 		self.weather_zip = Config.WEATHER_ZIP
 		self.weather_city = Config.WEATHER_CITY
 		self.weather_key = Config.WEATHER_KEY
@@ -65,7 +66,8 @@ class Fogdog:
 		if self.debug_data:
 			return self.debug_data
 
-		res = requests.get(self.weather_zip.format(zip_code, self.weather_key))
+		url = self.weather_zip.format(zip_code, self.weather_key)
+		res = requests.get(url)
 		if res.ok:
 			data = res.json()
 			return data
@@ -123,12 +125,13 @@ class Fogdog:
 			message = message[:-1]
 		else:
 			message = NOPE_MSG
-			res = requests.get(self.weather_city.format(self.default_city, self.weather_key))
+			url = self.weather_city.format(self.default_city_id, self.weather_key)
+			res = requests.get(url)
 			if res.ok:
 				weather_data = res.json()['weather']
 				condition = [data['description'] for data in weather_data]
 				message = message \
-					+ ' Current condition in {}: '.format(self.default_city) \
+					+ ' Current condition in {}: '.format(self.default_city_name) \
 					+ ', '.join(condition)
 			else:
 				self.logger.error(res.text)

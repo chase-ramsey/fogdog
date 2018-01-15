@@ -9,7 +9,8 @@ class Config(object):
 	PHONE = os.environ.get('TWILIO_PHONE')
 	DEBUG_PHONE = os.environ.get('DEBUG_PHONE')
 
-	DEFAULT_CITY = os.environ.get('DEFAULT_CITY')
+	DEFAULT_CITY_ID = os.environ.get('DEFAULT_CITY_ID')
+	DEFAULT_CITY_NAME = os.environ.get('DEFAULT_CITY_NAME')
 	WEATHER_ZIP = os.environ.get('WEATHER_ZIP')
 	WEATHER_CITY = os.environ.get('WEATHER_CITY')
 	WEATHER_KEY = os.environ.get('WEATHER_TOKEN')
@@ -21,7 +22,8 @@ class Config(object):
 			cls.TWILIO_KEY,
 			cls.PHONE,
 			cls.DEBUG_PHONE,
-			cls.DEFAULT_CITY,
+			cls.DEFAULT_CITY_ID,
+			cls.DEFAULT_CITY_NAME,
 			cls.WEATHER_ZIP,
 			cls.WEATHER_CITY,
 			cls.WEATHER_KEY
