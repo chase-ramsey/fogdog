@@ -129,7 +129,7 @@ class Fogdog:
 				condition = [data['description'] for data in weather_data]
 				message = message \
 					+ ' Current condition in {}: '.format(self.default_city) \
-					+ ', '.join(condition)[:-1]
+					+ ', '.join(condition)
 			else:
 				self.logger.error(res.text)
 
