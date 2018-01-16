@@ -1,20 +1,31 @@
+import boto3
 import logging
 import os
+from base64 import b64decode
 from enum import Enum
 from logging.handlers import RotatingFileHandler
 
 
-class Config(Enum):
-	TWILIO_SID = os.environ.get('TWILIO_SID')
-	TWILIO_KEY = os.environ.get('TWILIO_TOKEN')
-	PHONE = os.environ.get('TWILIO_PHONE')
-	DEBUG_PHONE = os.environ.get('DEBUG_PHONE')
+def _decrypt(key_name):
+	if bool(os.environ.get('LOCAL')):
+		return os.environ.get(key_name)
 
-	DEFAULT_CITY_ID = os.environ.get('DEFAULT_CITY_ID')
-	DEFAULT_CITY_NAME = os.environ.get('DEFAULT_CITY_NAME')
-	WEATHER_ZIP = os.environ.get('WEATHER_ZIP')
-	WEATHER_CITY = os.environ.get('WEATHER_CITY')
-	WEATHER_KEY = os.environ.get('WEATHER_TOKEN')
+	client = boto3.client('kms')
+	encrypted = b64decode(os.environ.get(key_name))
+	return client.decrypt(CiphertextBlob=encrypted)['Plaintext'].decode('utf8')
+
+
+class Config(Enum):
+	TWILIO_SID = _decrypt('TWILIO_SID')
+	TWILIO_KEY = _decrypt('TWILIO_TOKEN')
+	PHONE = _decrypt('TWILIO_PHONE')
+	DEBUG_PHONE = _decrypt('DEBUG_PHONE')
+
+	DEFAULT_CITY_ID = _decrypt('DEFAULT_CITY_ID')
+	DEFAULT_CITY_NAME = _decrypt('DEFAULT_CITY_NAME')
+	WEATHER_ZIP = _decrypt('WEATHER_ZIP')
+	WEATHER_CITY = _decrypt('WEATHER_CITY')
+	WEATHER_KEY = _decrypt('WEATHER_TOKEN')
 
 	@classmethod
 	def check_env(cls):
