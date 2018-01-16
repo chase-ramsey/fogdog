@@ -16,16 +16,12 @@ NOPE_MSG = 'Sorry dog. No fog.'
 
 class Fogdog:
 	def __init__(self, logger, debug=False, debug_data=None, send_msg=True):
-		# Twilio config
-		self.client = Client(Config.TWILIO_SID, Config.TWILIO_KEY)
-		self.phone = Config.PHONE
+		# Set config vars
+		for attr in Config:
+			self.__setattr__(attr.name.lower(), attr.value)
 
-		# Weather API config
-		self.default_city_id = Config.DEFAULT_CITY_ID
-		self.default_city_name = Config.DEFAULT_CITY_NAME
-		self.weather_zip = Config.WEATHER_ZIP
-		self.weather_city = Config.WEATHER_CITY
-		self.weather_key = Config.WEATHER_KEY
+		# Twilio config
+		self.client = Client(self.twilio_sid, self.twilio_key)
 
 		# S3 data
 		self.zips = self._load_file_s3('zips.json')
@@ -37,7 +33,6 @@ class Fogdog:
 		self.debug = debug
 		self.debug_data = debug_data
 		self.send_msg = send_msg
-		self.debug_phone = Config.DEBUG_PHONE
 
 	def _load_file_s3(self, key_name):
 		s3_cli = boto3.client('s3')
